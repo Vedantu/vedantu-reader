@@ -1,5 +1,8 @@
 package com.artifex.mupdfdemo;
 
+import com.vedantu.android.reader.customize.Constants;
+import com.vedantu.android.reader.utils.ga.GoogleAnalyticsUtils;
+
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -22,6 +25,7 @@ public class MuPDFReflowView extends WebView implements MuPDFView {
 
 	public MuPDFReflowView(Context c, MuPDFCore core, Point parentSize) {
 		super(c);
+		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_REFLOW_VIEW);
 		mHandler = new Handler();
 		mCore = core;
 		mParentSize = parentSize;

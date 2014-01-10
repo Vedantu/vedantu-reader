@@ -3,16 +3,20 @@ package com.artifex.mupdfdemo;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.vedantu.android.reader.R;
+import com.vedantu.android.reader.customize.Constants;
+import com.vedantu.android.reader.utils.ga.GoogleAnalyticsUtils;
 
 public class PrintDialogActivity extends Activity {
 	private static final String PRINT_DIALOG_URL = "https://www.google.com/cloudprint/dialog.html";
@@ -40,10 +44,11 @@ public class PrintDialogActivity extends Activity {
 
 	private int resultCode;
 
-	@Override
+	@SuppressLint("SetJavaScriptEnabled")
+    @Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
-
+		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_PDF_PRINT_DIALOG_ACTIVITY);
 		resultCode = RESULT_OK;
 		setContentView(R.layout.print_dialog);
 		dialogWebView = (WebView) findViewById(R.id.webview);
@@ -75,6 +80,7 @@ public class PrintDialogActivity extends Activity {
 			return cloudPrintIntent.getExtras().getString("title");
 		}
 
+		@JavascriptInterface
 		public String getContent() {
 			try {
 				ContentResolver contentResolver = getContentResolver();

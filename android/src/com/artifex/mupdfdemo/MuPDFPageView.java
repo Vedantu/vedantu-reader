@@ -2,6 +2,7 @@ package com.artifex.mupdfdemo;
 
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
@@ -17,6 +18,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import com.vedantu.android.reader.R;
+import com.vedantu.android.reader.customize.Constants;
+import com.vedantu.android.reader.utils.ga.GoogleAnalyticsUtils;
 
 /* This enum should be kept in line with the cooresponding C enum in mupdf.c */
 enum SignatureState {
@@ -112,6 +115,7 @@ public class MuPDFPageView extends PageView implements MuPDFView {
 
 	public MuPDFPageView(Context c, FilePicker.FilePickerSupport filePickerSupport, MuPDFCore core, Point parentSize, Bitmap sharedHqBm) {
 		super(c, parentSize, sharedHqBm);
+		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_PAGE_VIEW);
 		mFilePickerSupport = filePickerSupport;
 		mCore = core;
 		mTextEntryBuilder = new AlertDialog.Builder(c);
@@ -399,7 +403,8 @@ public class MuPDFPageView extends PageView implements MuPDFView {
 		return Hit.Nothing;
 	}
 
-	public boolean copySelection() {
+	@SuppressLint("NewApi")
+    public boolean copySelection() {
 		final StringBuilder text = new StringBuilder();
 
 		processSelectedText(new TextProcessor() {

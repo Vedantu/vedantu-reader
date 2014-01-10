@@ -20,7 +20,10 @@ import android.os.FileObserver;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ListView;
+
 import com.vedantu.android.reader.R;
+import com.vedantu.android.reader.customize.Constants;
+import com.vedantu.android.reader.utils.ga.GoogleAnalyticsUtils;
 
 enum Purpose {
 	PickPDF,
@@ -41,7 +44,7 @@ public class ChoosePDFActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_CHOOSE_PDF_ACTIVITY);
 		mPurpose = Intent.ACTION_MAIN.equals(getIntent().getAction()) ? Purpose.PickPDF : Purpose.PickKeyFile;
 
 

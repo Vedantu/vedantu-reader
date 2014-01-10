@@ -36,6 +36,7 @@ import android.widget.ViewAnimator;
 import com.vedantu.android.reader.R;
 import com.vedantu.android.reader.customize.Constants;
 import com.vedantu.android.reader.customize.CustomizeViewerLayout;
+import com.vedantu.android.reader.utils.ga.GoogleAnalyticsUtils;
 
 class ThreadPerTaskExecutor implements Executor {
 	public void execute(Runnable r) {
@@ -247,7 +248,7 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-
+		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_PDF_VIEWER_ACTIVITY);
 		mAlertBuilder = new AlertDialog.Builder(this);
 
 		if (core == null) {

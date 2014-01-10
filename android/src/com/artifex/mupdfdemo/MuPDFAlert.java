@@ -1,5 +1,8 @@
 package com.artifex.mupdfdemo;
 
+import com.vedantu.android.reader.customize.Constants;
+import com.vedantu.android.reader.utils.ga.GoogleAnalyticsUtils;
+
 public class MuPDFAlert {
 	public enum IconType {Error,Warning,Question,Status};
 	public enum ButtonPressed {None,Ok,Cancel,No,Yes};
@@ -17,5 +20,6 @@ public class MuPDFAlert {
 		buttonGroupType = aButtonGroupType;
 		title = aTitle;
 		buttonPressed = aButtonPressed;
+		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_ALERT_BOX);
 	}
 }

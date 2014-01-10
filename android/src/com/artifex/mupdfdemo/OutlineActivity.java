@@ -1,5 +1,8 @@
 package com.artifex.mupdfdemo;
 
+import com.vedantu.android.reader.customize.Constants;
+import com.vedantu.android.reader.utils.ga.GoogleAnalyticsUtils;
+
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +15,7 @@ public class OutlineActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_PDF_OUTLINE_ACTIVITY);
 		mItems = OutlineActivityData.get().items;
 		setListAdapter(new OutlineAdapter(getLayoutInflater(),mItems));
 		// Restore the position within the list from last viewing
