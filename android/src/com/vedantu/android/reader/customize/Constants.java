@@ -24,6 +24,6 @@ public class Constants {
     public static final String GA_SCREEN_NAME_PDF_OUTLINE_ACTIVITY      = "PDF_OUTLINE_ACTIVITY";
     public static final String GA_SCREEN_NAME_ALERT_BOX                 = "ALERT_BOX";
     public static final String GA_SCREEN_NAME_REFLOW_VIEW               = "REFLOW_VIEW";
-    public static final String GA_SCREEN_NAME_PAGE_VIEW               = "PAGE_VIEW";
+    public static final String GA_SCREEN_NAME_PAGE_VIEW                 = "PAGE_VIEW";
 
 }
