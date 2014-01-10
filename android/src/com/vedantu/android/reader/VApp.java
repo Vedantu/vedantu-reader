@@ -23,13 +23,13 @@ public class VApp extends Application {
      * Google Analytics configuration values.
      */
     // Placeholder property ID.
-    private static String          GA_PROPERTY_ID               = "UA-45060486-6";
+    private static String          GA_PROPERTY_ID               = null;
 
     // Dispatch period in seconds.
     private static final int       GA_DISPATCH_PERIOD           = 20;
 
     // Prevent hits from being sent to reports, i.e. during testing.
-    private static boolean         GA_IS_DRY_RUN                = true;
+    private static boolean         GA_IS_DRY_RUN                = false;
 
     // GA Logger verbosity.
     private static final LogLevel  GA_LOG_VERBOSITY             = LogLevel.INFO;
@@ -47,6 +47,9 @@ public class VApp extends Application {
 
         GA_PROPERTY_ID = properties.getProperty("ga.property.id");
         GA_IS_DRY_RUN = Boolean.parseBoolean(properties.getProperty("ga.is.dry.run"));
+        if (GA_PROPERTY_ID == null) {
+            return;
+        }
         Log.d(TAG, "Property id for google analytics is  " + GA_PROPERTY_ID);
         mTracker = mGa.getTracker(GA_PROPERTY_ID);
 
