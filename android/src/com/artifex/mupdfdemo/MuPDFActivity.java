@@ -249,6 +249,7 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 	{
 		super.onCreate(savedInstanceState);
 		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_PDF_VIEWER_ACTIVITY);
+		GoogleAnalyticsUtils.sendPageViewDataToGA();
 		mAlertBuilder = new AlertDialog.Builder(this);
 
 		if (core == null) {

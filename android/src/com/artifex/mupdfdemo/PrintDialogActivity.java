@@ -49,6 +49,7 @@ public class PrintDialogActivity extends Activity {
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_PDF_PRINT_DIALOG_ACTIVITY);
+		GoogleAnalyticsUtils.sendPageViewDataToGA();
 		resultCode = RESULT_OK;
 		setContentView(R.layout.print_dialog);
 		dialogWebView = (WebView) findViewById(R.id.webview);

@@ -45,6 +45,7 @@ public class ChoosePDFActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_CHOOSE_PDF_ACTIVITY);
+		GoogleAnalyticsUtils.sendPageViewDataToGA();
 		mPurpose = Intent.ACTION_MAIN.equals(getIntent().getAction()) ? Purpose.PickPDF : Purpose.PickKeyFile;
 
 
@@ -174,6 +175,7 @@ public class ChoosePDFActivity extends ListActivity {
 		observer.startWatching();
 	}
 
+	
 	private void lastPosition() {
 		String p = mDirectory.getAbsolutePath();
 		if (mPositions.containsKey(p))

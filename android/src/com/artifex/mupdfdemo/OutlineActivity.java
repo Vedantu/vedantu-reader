@@ -16,6 +16,7 @@ public class OutlineActivity extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_PDF_OUTLINE_ACTIVITY);
+		GoogleAnalyticsUtils.sendPageViewDataToGA();
 		mItems = OutlineActivityData.get().items;
 		setListAdapter(new OutlineAdapter(getLayoutInflater(),mItems));
 		// Restore the position within the list from last viewing

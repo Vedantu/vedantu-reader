@@ -116,6 +116,7 @@ public class MuPDFPageView extends PageView implements MuPDFView {
 	public MuPDFPageView(Context c, FilePicker.FilePickerSupport filePickerSupport, MuPDFCore core, Point parentSize, Bitmap sharedHqBm) {
 		super(c, parentSize, sharedHqBm);
 		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_PAGE_VIEW);
+		GoogleAnalyticsUtils.sendPageViewDataToGA();
 		mFilePickerSupport = filePickerSupport;
 		mCore = core;
 		mTextEntryBuilder = new AlertDialog.Builder(c);

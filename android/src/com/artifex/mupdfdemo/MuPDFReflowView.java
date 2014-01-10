@@ -26,6 +26,7 @@ public class MuPDFReflowView extends WebView implements MuPDFView {
 	public MuPDFReflowView(Context c, MuPDFCore core, Point parentSize) {
 		super(c);
 		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_REFLOW_VIEW);
+		GoogleAnalyticsUtils.sendPageViewDataToGA();
 		mHandler = new Handler();
 		mCore = core;
 		mParentSize = parentSize;

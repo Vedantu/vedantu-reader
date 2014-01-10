@@ -21,5 +21,6 @@ public class MuPDFAlert {
 		title = aTitle;
 		buttonPressed = aButtonPressed;
 		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_ALERT_BOX);
+		GoogleAnalyticsUtils.sendPageViewDataToGA();
 	}
 }
