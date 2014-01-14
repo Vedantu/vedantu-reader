@@ -86,6 +86,8 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 	private AsyncTask<Void,Void,MuPDFAlert> mAlertTask;
 	private AlertDialog mAlertDialog;
 	private FilePicker mFilePicker;
+	
+	private String[] hideLayouts;
 
 	public void createAlertWaiter() {
 		mAlertsActive = true;
@@ -448,7 +450,17 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 				mDocView.resetupChildren();
 			}
 		};
-
+		
+		hideLayouts = getIntent().getStringArrayExtra(Constants.VEDANTU_READER_HIDE_BUTTONS); 
+		
+		if(hideLayouts!=null){
+	       // getIntent().removeExtra(Constants.VEDANTU_READER_HIDE_BUTTONS);
+		}
+		
+		if(savedInstanceState != null && hideLayouts == null){
+		    hideLayouts= savedInstanceState.getStringArray(Constants.VEDANTU_READER_HIDE_BUTTONS);
+		}
+		
 		// Make the buttons overlay, and store all its
 		// controls in variables
 		makeButtonsView();
@@ -666,6 +678,10 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 
 		if (mReflow)
 			outState.putBoolean("ReflowMode", true);
+		if(hideLayouts!=null){
+		    outState.putStringArray(Constants.VEDANTU_READER_HIDE_BUTTONS, hideLayouts);
+		}
+		
 	}
 
 	@Override
@@ -874,7 +890,8 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 		mPageNumberView.setVisibility(View.INVISIBLE);
 		mInfoView.setVisibility(View.INVISIBLE);
 		mPageSlider.setVisibility(View.INVISIBLE);
-		CustomizeViewerLayout.customizeButtonViews(getIntent(), mButtonsView);
+		
+		CustomizeViewerLayout.customizeButtonViews(hideLayouts, mButtonsView);
 	}
 
 	public void OnMoreButtonClick(View v) {

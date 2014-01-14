@@ -3,7 +3,6 @@ package com.vedantu.android.reader.customize;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.content.Intent;
 import android.view.View;
 
 import com.vedantu.android.reader.R;
@@ -26,17 +25,12 @@ public class CustomizeViewerLayout {
         keyToIdMap.put(Constants.VEDANTU_READER_EDIT_ANNOTATION_BUTTON, R.id.editAnnotButton);
     }
 
-    public static void customizeButtonViews(Intent intent, View buttonLayoutContainer) {
+    public static void customizeButtonViews(String[] hideLayouts, View buttonLayoutContainer) {
 
-        if (intent == null || buttonLayoutContainer == null) {
+        if (hideLayouts == null || buttonLayoutContainer == null) {
             return;
         }
 
-        String[] hideLayouts = intent.getStringArrayExtra(Constants.VEDANTU_READER_HIDE_BUTTONS);
-
-        if (hideLayouts == null) {
-            return;
-        }
 
         for (String layoutKey : hideLayouts) {
             Integer id = keyToIdMap.get(layoutKey.trim());
@@ -46,6 +40,5 @@ public class CustomizeViewerLayout {
                 buttonView.setVisibility(View.INVISIBLE);
             }
         }
-        intent.removeExtra(Constants.VEDANTU_READER_HIDE_BUTTONS);
     }
 }
