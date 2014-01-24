@@ -26,13 +26,13 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ViewAnimator;
-
 import com.vedantu.android.reader.R;
 import com.vedantu.android.reader.customize.Constants;
 import com.vedantu.android.reader.customize.CustomizeViewerLayout;
@@ -44,7 +44,7 @@ class ThreadPerTaskExecutor implements Executor {
 	}
 }
 
-public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupport
+public class MuPDFActivity extends Activity
 {
 	/* The core rendering instance */
 	enum TopBarMode {Main, Search, Annot, Delete, More, Accept};
@@ -52,7 +52,6 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 
 	private final int    OUTLINE_REQUEST=0;
 	private final int    PRINT_REQUEST=1;
-	private final int    FILEPICK_REQUEST=2;
 	private MuPDFCore    core;
 	private String       mFileName;
 	private MuPDFReaderView mDocView;
@@ -85,8 +84,6 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 	private boolean mReflow = false;
 	private AsyncTask<Void,Void,MuPDFAlert> mAlertTask;
 	private AlertDialog mAlertDialog;
-	private FilePicker mFilePicker;
-	
 	private String[] hideLayouts;
 
 	public void createAlertWaiter() {
@@ -251,7 +248,8 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 	{
 		super.onCreate(savedInstanceState);
 		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_PDF_VIEWER_ACTIVITY);
-		GoogleAnalyticsUtils.sendPageViewDataToGA();
+        GoogleAnalyticsUtils.sendPageViewDataToGA();
+        
 		mAlertBuilder = new AlertDialog.Builder(this);
 
 		if (core == null) {
@@ -349,12 +347,12 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 		mPasswordView.setTransformationMethod(new PasswordTransformationMethod());
 		
 		if (!TextUtils.isEmpty(getIntent().getStringExtra(Constants.VEDANTU_READER_PASSWORD))
-		        && core.authenticatePassword(getIntent().getStringExtra(
-		                Constants.VEDANTU_READER_PASSWORD))) {
-		    createUI(savedInstanceState);
-		    getIntent().removeExtra(Constants.VEDANTU_READER_PASSWORD);
-		    return;
-		}
+                && core.authenticatePassword(getIntent().getStringExtra(
+                        Constants.VEDANTU_READER_PASSWORD))) {
+            createUI(savedInstanceState);
+            getIntent().removeExtra(Constants.VEDANTU_READER_PASSWORD);
+            return;
+        }
 		
 		AlertDialog alert = mAlertBuilder.create();
 		alert.setTitle(R.string.enter_password);
@@ -437,7 +435,7 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 				}
 			}
 		};
-		mDocView.setAdapter(new MuPDFPageAdapter(this, this, core));
+		mDocView.setAdapter(new MuPDFPageAdapter(this, core));
 
 		mSearchTask = new SearchTask(this, core) {
 			@Override
@@ -450,17 +448,17 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 				mDocView.resetupChildren();
 			}
 		};
-		
+
 		hideLayouts = getIntent().getStringArrayExtra(Constants.VEDANTU_READER_HIDE_BUTTONS); 
-		
-		if(hideLayouts!=null){
-	       // getIntent().removeExtra(Constants.VEDANTU_READER_HIDE_BUTTONS);
-		}
-		
-		if(savedInstanceState != null && hideLayouts == null){
-		    hideLayouts= savedInstanceState.getStringArray(Constants.VEDANTU_READER_HIDE_BUTTONS);
-		}
-		
+        
+        if(hideLayouts!=null){
+           // getIntent().removeExtra(Constants.VEDANTU_READER_HIDE_BUTTONS);
+        }
+        
+        if(savedInstanceState != null && hideLayouts == null){
+            hideLayouts= savedInstanceState.getStringArray(Constants.VEDANTU_READER_HIDE_BUTTONS);
+        }
+        
 		// Make the buttons overlay, and store all its
 		// controls in variables
 		makeButtonsView();
@@ -621,9 +619,6 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 			if (resultCode == RESULT_CANCELED)
 				showInfo(getString(R.string.print_failed));
 			break;
-		case FILEPICK_REQUEST:
-			if (mFilePicker != null && resultCode == RESULT_OK)
-				mFilePicker.onPick(data.getData());
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -638,7 +633,7 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 	private void reflowModeSet(boolean reflow)
 	{
 		mReflow = reflow;
-		mDocView.setAdapter(mReflow ? new MuPDFReflowAdapter(this, core) : new MuPDFPageAdapter(this, this, core));
+		mDocView.setAdapter(mReflow ? new MuPDFReflowAdapter(this, core) : new MuPDFPageAdapter(this, core));
 		mReflowButton.setColorFilter(mReflow ? Color.argb(0xFF, 172, 114, 37) : Color.argb(0xFF, 255, 255, 255));
 		setButtonEnabled(mAnnotButton, !reflow);
 		setButtonEnabled(mSearchButton, !reflow);
@@ -678,10 +673,6 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 
 		if (mReflow)
 			outState.putBoolean("ReflowMode", true);
-		if(hideLayouts!=null){
-		    outState.putStringArray(Constants.VEDANTU_READER_HIDE_BUTTONS, hideLayouts);
-		}
-		
 	}
 
 	@Override
@@ -701,13 +692,6 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 
 	public void onDestroy()
 	{
-		if(mDocView!=null){
-    	    mDocView.applyToChildren(new ReaderView.ViewMapper() {
-    			void applyToView(View view) {
-    				((MuPDFView)view).releaseBitmaps();
-    			}
-    		});
-	    }
 		if (core != null)
 			core.onDestroy();
 		if (mAlertTask != null) {
@@ -890,7 +874,7 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 		mPageNumberView.setVisibility(View.INVISIBLE);
 		mInfoView.setVisibility(View.INVISIBLE);
 		mPageSlider.setVisibility(View.INVISIBLE);
-		
+		 
 		CustomizeViewerLayout.customizeButtonViews(hideLayouts, mButtonsView);
 	}
 
@@ -1132,12 +1116,5 @@ public class MuPDFActivity extends Activity implements FilePicker.FilePickerSupp
 		} else {
 			super.onBackPressed();
 		}
-	}
-
-	@Override
-	public void performPickFor(FilePicker picker) {
-		mFilePicker = picker;
-		Intent intent = new Intent(this, ChoosePDFActivity.class);
-		startActivityForResult(intent, FILEPICK_REQUEST);
 	}
 }

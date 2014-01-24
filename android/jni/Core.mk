@@ -16,13 +16,10 @@ LOCAL_CFLAGS += -DAA_BITS=8
 ifdef MEMENTO
 LOCAL_CFLAGS += -DMEMENTO -DMEMENTO_LEAKONLY
 endif
-ifdef SSL_BUILD
-LOCAL_CFLAGS += -DHAVE_OPENSSL
-endif
 
 LOCAL_C_INCLUDES := \
 	../../thirdparty/jbig2dec \
-	../../thirdparty/openjpeg/libopenjpeg \
+	../../thirdparty/openjpeg/src/lib/openjp2 \
 	../../thirdparty/jpeg \
 	../../thirdparty/zlib \
 	../../thirdparty/freetype/include \
@@ -31,18 +28,13 @@ LOCAL_C_INCLUDES := \
 	../../source/xps \
 	../../source/cbz \
 	../../source/img \
-	../../scripts/freetype \
-	../../scripts/jpeg \
-	../../scripts/openjpeg \
+	../../scripts \
 	../../generated \
 	../../resources \
 	../../include \
 	../..
 ifdef V8_BUILD
 LOCAL_C_INCLUDES += ../../thirdparty/$(V8)/include
-endif
-ifdef SSL_BUILD
-LOCAL_C_INCLUDES += ../../thirdparty/openssl/include
 endif
 
 LOCAL_MODULE    := mupdfcore

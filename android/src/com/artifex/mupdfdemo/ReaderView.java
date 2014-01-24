@@ -48,13 +48,11 @@ public class ReaderView
 	private int               mXScroll;    // Scroll amounts recorded from events.
 	private int               mYScroll;    // and then accounted for in onLayout
 	private boolean           mReflow = false;
-	private boolean           mReflowChanged = false;
 	private final GestureDetector
 				  mGestureDetector;
 	private final ScaleGestureDetector
 				  mScaleGestureDetector;
 	private final Scroller    mScroller;
-	private final Stepper     mStepper;
 	private int               mScrollerLastX;
 	private int               mScrollerLastY;
 	private boolean           mScrollDisabled;
@@ -68,7 +66,6 @@ public class ReaderView
 		mGestureDetector = new GestureDetector(this);
 		mScaleGestureDetector = new ScaleGestureDetector(context, this);
 		mScroller        = new Scroller(context);
-		mStepper = new Stepper(this, this);
 	}
 
 	public ReaderView(Context context, AttributeSet attrs) {
@@ -76,7 +73,6 @@ public class ReaderView
 		mGestureDetector = new GestureDetector(this);
 		mScaleGestureDetector = new ScaleGestureDetector(context, this);
 		mScroller        = new Scroller(context);
-		mStepper = new Stepper(this, this);
 	}
 
 	public ReaderView(Context context, AttributeSet attrs, int defStyle) {
@@ -84,7 +80,6 @@ public class ReaderView
 		mGestureDetector = new GestureDetector(this);
 		mScaleGestureDetector = new ScaleGestureDetector(context, this);
 		mScroller        = new Scroller(context);
-		mStepper = new Stepper(this, this);
 	}
 
 	public int getDisplayedViewIndex() {
@@ -208,7 +203,7 @@ public class ReaderView
 		}
 		mScrollerLastX = mScrollerLastY = 0;
 		mScroller.startScroll(0, 0, remainingX - xOffset, remainingY - yOffset, 400);
-		mStepper.prod();
+		post(this);
 	}
 
 	public void smartMoveBackwards() {
@@ -280,7 +275,7 @@ public class ReaderView
 		}
 		mScrollerLastX = mScrollerLastY = 0;
 		mScroller.startScroll(0, 0, remainingX - xOffset, remainingY - yOffset, 400);
-		mStepper.prod();
+		post(this);
 	}
 
 	public void resetupChildren() {
@@ -295,11 +290,18 @@ public class ReaderView
 
 	public void refresh(boolean reflow) {
 		mReflow = reflow;
-		mReflowChanged = true;
-		mResetLayout = true;
 
 		mScale = 1.0f;
 		mXScroll = mYScroll = 0;
+
+		int numChildren = mChildViews.size();
+		for (int i = 0; i < numChildren; i++) {
+			View v = mChildViews.valueAt(i);
+			onNotInUse(v);
+			removeViewInLayout(v);
+		}
+		mChildViews.clear();
+		mViewCache.clear();
 
 		requestLayout();
 	}
@@ -336,7 +338,7 @@ public class ReaderView
 			mScrollerLastX = x;
 			mScrollerLastY = y;
 			requestLayout();
-			mStepper.prod();
+			post(this);
 		}
 		else if (!mUserInteracting) {
 			// End of an inertial scroll and the user is not interacting.
@@ -400,7 +402,7 @@ public class ReaderView
 			if(withinBoundsInDirectionOfTravel(bounds, velocityX, velocityY)
 					&& expandedBounds.contains(0, 0)) {
 				mScroller.fling(0, 0, (int)velocityX, (int)velocityY, bounds.left, bounds.right, bounds.top, bounds.bottom);
-				mStepper.prod();
+				post(this);
 			}
 		}
 
@@ -435,9 +437,12 @@ public class ReaderView
 		mScale = Math.min(Math.max(mScale * detector.getScaleFactor(), min_scale), max_scale);
 
 		if (mReflow) {
-			View v = mChildViews.get(mCurrent);
-			if (v != null)
-				onScaleChild(v, mScale);
+			applyToChildren(new ViewMapper() {
+				@Override
+				void applyToView(View view) {
+					onScaleChild(view, mScale);
+				}
+			});
 		} else {
 			float factor = mScale/previousScale;
 
@@ -468,14 +473,6 @@ public class ReaderView
 	}
 
 	public void onScaleEnd(ScaleGestureDetector detector) {
-		if (mReflow) {
-			applyToChildren(new ViewMapper() {
-				@Override
-				void applyToView(View view) {
-					onScaleChild(view, mScale);
-				}
-			});
-		}
 		mScaling = false;
 	}
 
@@ -486,10 +483,10 @@ public class ReaderView
 		if (!mScaling)
 			mGestureDetector.onTouchEvent(event);
 
-		if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
+		if ((event.getAction() & event.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
 			mUserInteracting = true;
 		}
-		if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+		if ((event.getAction() & event.ACTION_MASK) == MotionEvent.ACTION_UP) {
 			mScrollDisabled = false;
 			mUserInteracting = false;
 
@@ -541,7 +538,7 @@ public class ReaderView
 					postUnsettle(cv);
 					// post to invoke test for end of animation
 					// where we must set hq area for the new current view
-					mStepper.prod();
+					post(this);
 
 					onMoveOffChild(mCurrent);
 					mCurrent++;
@@ -552,7 +549,7 @@ public class ReaderView
 					postUnsettle(cv);
 					// post to invoke test for end of animation
 					// where we must set hq area for the new current view
-					mStepper.prod();
+					post(this);
 
 					onMoveOffChild(mCurrent);
 					mCurrent--;
@@ -589,15 +586,8 @@ public class ReaderView
 				removeViewInLayout(v);
 			}
 			mChildViews.clear();
-
-			// Don't reuse cached views if the adapter has changed
-			if (mReflowChanged) {
-				mReflowChanged = false;
-				mViewCache.clear();
-			}
-
 			// post to ensure generation of hq area
-			mStepper.prod();
+			post(this);
 		}
 
 		// Ensure current view is present
@@ -674,7 +664,8 @@ public class ReaderView
 	@Override
 	public void setAdapter(Adapter adapter) {
 		mAdapter = adapter;
-
+		mChildViews.clear();
+		removeAllViewsInLayout();
 		requestLayout();
 	}
 
@@ -782,7 +773,7 @@ public class ReaderView
 		if (corr.x != 0 || corr.y != 0) {
 			mScrollerLastX = mScrollerLastY = 0;
 			mScroller.startScroll(0, 0, corr.x, corr.y, 400);
-			mStepper.prod();
+			post(this);
 		}
 	}
 

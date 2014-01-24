@@ -27,3 +27,7 @@ proguard/
 *.ipr
 *.iws
 .idea/
+
+# Configuration file for mupdf
+libs_mupdf
+mupdf.properties

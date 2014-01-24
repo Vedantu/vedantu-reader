@@ -10,7 +10,6 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -49,7 +48,7 @@ public class PrintDialogActivity extends Activity {
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		GoogleAnalyticsUtils.setScreenName(Constants.GA_SCREEN_NAME_PDF_PRINT_DIALOG_ACTIVITY);
-		GoogleAnalyticsUtils.sendPageViewDataToGA();
+        GoogleAnalyticsUtils.sendPageViewDataToGA();
 		resultCode = RESULT_OK;
 		setContentView(R.layout.print_dialog);
 		dialogWebView = (WebView) findViewById(R.id.webview);
@@ -81,7 +80,6 @@ public class PrintDialogActivity extends Activity {
 			return cloudPrintIntent.getExtras().getString("title");
 		}
 
-		@JavascriptInterface
 		public String getContent() {
 			try {
 				ContentResolver contentResolver = getContentResolver();

@@ -77,7 +77,7 @@ public class VApp extends Application {
         super.onCreate();
         try {
             properties.load(getApplicationContext().getAssets().open("conf/app.conf"));
-        } catch (IOException e) {
+        } catch (Throwable e) {
             Log.e(TAG, e.getMessage(), e);
         }
         initializeGa();
